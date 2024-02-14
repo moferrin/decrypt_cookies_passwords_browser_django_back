@@ -1,3 +1,4 @@
-/dataCookies
-/dataLogin
+/dataCookies*
+/dataLogin*
+/dataHisto*
 /db.sqlite3
